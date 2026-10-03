@@ -1,0 +1,15 @@
+# ใช้กับ Hostinger Docker Manager — VPS จะดึงโค้ดจาก GitHub repo นี้ไป build เอง
+# BOT_TOKEN ไม่ต้องใส่ในไฟล์นี้ ให้ใส่ในช่อง Environment variables ของ Docker Manager
+services:
+  bot:
+    build: https://github.com/tklom/telegram_grammy.git#main
+    pull_policy: build        # build ใหม่จาก GitHub ทุกครั้งที่ deploy/update
+    restart: unless-stopped
+    init: true
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN}
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

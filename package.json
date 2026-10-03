@@ -1,0 +1,19 @@
+{
+  "name": "telegram-grammy-bot",
+  "version": "1.0.0",
+  "description": "Simple Telegram bot built with grammY",
+  "main": "src/bot.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/bot.js",
+    "dev": "node --watch src/bot.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^18.0.5",
+    "grammy": "^1.46.0"
+  }
+}
