@@ -9,6 +9,33 @@ if (!token) {
 
 const bot = new Bot(token);
 
+// สรุปว่า update นี้คืออะไร เพื่อเขียนลง log
+function describeUpdate(ctx) {
+  if (ctx.message?.text) return `"${ctx.message.text}"`;
+  if (ctx.callbackQuery) return `[กดปุ่ม: ${ctx.callbackQuery.data}]`;
+  if (ctx.message) {
+    const types = ["photo", "sticker", "video", "voice", "audio", "document", "location", "contact", "animation"];
+    const type = types.find((t) => t in ctx.message) ?? "message";
+    return `[${type}]${ctx.message.caption ? ` "${ctx.message.caption}"` : ""}`;
+  }
+  return `[${Object.keys(ctx.update).find((k) => k !== "update_id")}]`;
+}
+
+// Log ทุก update ที่เข้ามา: ใคร ส่งอะไร ใช้เวลากี่ ms สำเร็จหรือ error
+bot.use(async (ctx, next) => {
+  const started = Date.now();
+  const u = ctx.from;
+  const who = u ? `${u.first_name}${u.username ? ` (@${u.username})` : ""} id=${u.id}` : "unknown";
+  const line = `${who} → ${describeUpdate(ctx)}`;
+  try {
+    await next();
+    console.log(`📩 ${line} ✓ ${Date.now() - started}ms`);
+  } catch (err) {
+    console.log(`📩 ${line} ✗ ${Date.now() - started}ms`);
+    throw err;
+  }
+});
+
 // /start — ทักทาย + ปุ่ม inline
 bot.command("start", async (ctx) => {
   const name = ctx.from?.first_name ?? "เพื่อน";
